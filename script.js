@@ -97,6 +97,8 @@ document.addEventListener("keydown", function(e) {
 
 /* ================= INTRO ANIMATION ================= */
 
+const introLoader = document.getElementById("introLoader");
+const introText = document.getElementById("introText");
 const finalText = "KENT";
 const chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789#$%&@";
 let revealIndex = 0;
@@ -126,24 +128,60 @@ function hackerReveal() {
             iterations = 0;
         }
 
-        if (revealIndex > finalText.length) {
+        if (revealIndex >= finalText.length) {
             introText.textContent = finalText;
             clearInterval(interval);
-            closeIntro();
-        }
+
+            setTimeout(() => {
+                startBreakExit();   // NEW EXIT EFFECT
+            }, 400);
+         }
     }, 60);
-}
-
-// closing animation
-function closeIntro() {
-    introLoader.classList.add("intro-hide");
-
-    setTimeout(() => {
-        introLoader.style.display = "none";
-    }, 1500);
 }
 
 // start intro after page loads
 window.addEventListener("load", () => {
     setTimeout(hackerReveal, 600);
 });
+
+const breakGrid = document.getElementById("breakGrid");
+
+function startBreakExit(){
+
+    const cols = 8;
+    const rows = 6;
+    const total = cols * rows;
+
+    // create boxes
+    for(let i=0;i<total;i++){
+        const box = document.createElement("div");
+        box.classList.add("break-box");
+        breakGrid.appendChild(box);
+    }
+
+    const boxes = document.querySelectorAll(".break-box");
+
+    // random order
+    const shuffled = [...boxes].sort(()=>Math.random()-0.5);
+
+    shuffled.forEach((box,index)=>{
+
+        // appear one by one
+        setTimeout(()=>{
+            box.classList.add("break-show");
+
+            // destroy after appear
+            setTimeout(()=>{
+                box.classList.add("break-destroy");
+            },120);
+
+        }, index * 35); // speed of destruction
+    });
+
+    // remove intro after all broken
+    setTimeout(()=>{
+        introLoader.style.display="none";
+        document.body.classList.add("page-reveal");
+    }, total * 35 + 800);
+}
+
