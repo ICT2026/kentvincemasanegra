@@ -356,3 +356,73 @@ header {
     background: #00f7ff;
     color: black;
 }
+
+/* ================= INTRO LOADER ================= */
+
+#introLoader {
+    position: fixed;
+    inset: 0;
+    background: black;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 99999;
+    overflow: hidden;
+}
+
+/* center content */
+.intro-content {
+    text-align: center;
+    animation: introFadeIn 1s ease forwards;
+}
+
+.intro-logo {
+    width: 120px;
+    margin-bottom: 20px;
+    filter: drop-shadow(0 0 15px #00f7ff);
+}
+
+/* KENT text */
+.intro-text {
+    font-family: 'Orbitron', sans-serif;
+    font-size: 42px;
+    letter-spacing: 12px;
+    color: #00f7ff;
+    text-shadow: 0 0 15px #00f7ff;
+}
+
+/* glitch effect */
+.glitch {
+    animation: glitch 0.25s infinite;
+}
+
+@keyframes glitch {
+    0% { transform: translate(0); }
+    25% { transform: translate(2px,-2px); }
+    50% { transform: translate(-2px,2px); }
+    75% { transform: translate(2px,2px); }
+    100% { transform: translate(0); }
+}
+
+/* fade intro */
+.intro-hide {
+    animation: introExit 1.5s ease forwards;
+}
+
+@keyframes introExit {
+    0% {
+        opacity: 1;
+        filter: blur(0);
+        transform: scale(1);
+    }
+    100% {
+        opacity: 0;
+        filter: blur(20px);
+        transform: scale(0.6) translateY(-200px);
+    }
+}
+
+@keyframes introFadeIn {
+    from { opacity:0; }
+    to { opacity:1; }
+}
