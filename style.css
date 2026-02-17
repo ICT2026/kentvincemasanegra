@@ -29,7 +29,7 @@ header {
     justify-content: space-between;
     align-items: center;
     padding: 15px 40px;
-    z-index: 1500;
+    z-index: 5000; /* 🔥 increase this */
     border-bottom: 1px solid #222;
 }
 
@@ -46,6 +46,9 @@ header {
 .hamburger {
     font-size: 28px;
     cursor: pointer;
+    color: red;              /* 🔥 make it red for testing */
+    background: yellow;      /* 🔥 add background */
+    padding: 5px 10px;
 }
 
 /* SIDE PANEL */
