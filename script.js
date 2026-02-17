@@ -97,9 +97,6 @@ document.addEventListener("keydown", function(e) {
 
 /* ================= INTRO ANIMATION ================= */
 
-const introLoader = document.getElementById("introLoader");
-const introText = document.getElementById("introText");
-
 const finalText = "KENT";
 const chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789#$%&@";
 let revealIndex = 0;
@@ -129,26 +126,12 @@ function hackerReveal() {
             iterations = 0;
         }
 
-        if (revealIndex === finalText.length) {
+        if (revealIndex > finalText.length) {
+            introText.textContent = finalText;
             clearInterval(interval);
-            startScanner(); // next animation
+            closeIntro();
         }
-
     }, 60);
-}
-
-// glitch phase
-function startGlitch() {
-    introText.classList.add("glitch");
-
-    setTimeout(() => {
-        introText.classList.remove("glitch");
-        closeIntro();
-    }, 1200);
-}
-
-function startScanner() {
-    setTimeout(closeIntro, 1500);
 }
 
 // closing animation
