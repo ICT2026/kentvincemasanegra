@@ -258,6 +258,21 @@ header {
     transform: scale(1.2);
 }
 
+/* Extra footer contact line */
+.footer-contact {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    flex-wrap: wrap;
+}
+
+/* Extra small icons */
+.footer-extra-icon {
+    width: 16px;
+    height: 16px;
+    object-fit: contain;
+}
+
 /* IMAGE MODAL */
 .image-modal {
     position: fixed;
