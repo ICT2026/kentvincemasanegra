@@ -113,7 +113,7 @@ header {
 
 /* Duplicate automatically using ::after */
 .marquee-track::after {
-    content: "Advertise | Advertise | Advertise | Advertise | Advertise | Advertise | Advertise | Advertise | Advertise | Advertise | ";
+    content: "Advertise | ";
 }
 
 @keyframes scroll {
