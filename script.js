@@ -94,3 +94,46 @@ document.addEventListener("keydown", function(e) {
 });
 
 });
+
+/* ================= INTRO ANIMATION ================= */
+
+const introLoader = document.getElementById("introLoader");
+const introText = document.getElementById("introText");
+
+const name = "KENT";
+let i = 0;
+
+// typewriter effect
+function typeIntro() {
+    if (i < name.length) {
+        introText.textContent += name.charAt(i);
+        i++;
+        setTimeout(typeIntro, 300);
+    } else {
+        startGlitch();
+    }
+}
+
+// glitch phase
+function startGlitch() {
+    introText.classList.add("glitch");
+
+    setTimeout(() => {
+        introText.classList.remove("glitch");
+        closeIntro();
+    }, 1200);
+}
+
+// closing animation
+function closeIntro() {
+    introLoader.classList.add("intro-hide");
+
+    setTimeout(() => {
+        introLoader.style.display = "none";
+    }, 1500);
+}
+
+// start intro after page loads
+window.addEventListener("load", () => {
+    setTimeout(typeIntro, 600);
+});
