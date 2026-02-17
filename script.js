@@ -100,18 +100,41 @@ document.addEventListener("keydown", function(e) {
 const introLoader = document.getElementById("introLoader");
 const introText = document.getElementById("introText");
 
-const name = "KENT";
-let i = 0;
+const finalText = "KENT";
+const chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789#$%&@";
+let revealIndex = 0;
 
-// typewriter effect
-function typeIntro() {
-    if (i < name.length) {
-        introText.textContent += name.charAt(i);
-        i++;
-        setTimeout(typeIntro, 300);
-    } else {
-        startGlitch();
-    }
+function hackerReveal() {
+
+    let iterations = 0;
+
+    const interval = setInterval(() => {
+
+        introText.textContent = finalText
+            .split("")
+            .map((letter, index) => {
+
+                if (index < revealIndex) {
+                    return finalText[index];
+                }
+
+                return chars[Math.floor(Math.random() * chars.length)];
+            })
+            .join("");
+
+        iterations++;
+
+        if (iterations > 10) {
+            revealIndex++;
+            iterations = 0;
+        }
+
+        if (revealIndex === finalText.length) {
+            clearInterval(interval);
+            startScanner(); // next animation
+        }
+
+    }, 60);
 }
 
 // glitch phase
@@ -122,6 +145,10 @@ function startGlitch() {
         introText.classList.remove("glitch");
         closeIntro();
     }, 1200);
+}
+
+function startScanner() {
+    setTimeout(closeIntro, 1500);
 }
 
 // closing animation
@@ -135,5 +162,5 @@ function closeIntro() {
 
 // start intro after page loads
 window.addEventListener("load", () => {
-    setTimeout(typeIntro, 600);
+    setTimeout(hackerReveal, 600);
 });
