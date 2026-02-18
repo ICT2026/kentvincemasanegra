@@ -150,3 +150,66 @@ function closeIntro(){
         document.body.classList.add("page-reveal");
     },1500);
 }
+
+/* ===== 3D COVERFLOW ===== */
+
+const coverItems = document.querySelectorAll(".cover-item");
+let coverIndex = 0;
+
+function updateCoverflow(){
+
+    coverItems.forEach(item=>{
+        item.className="cover-item";
+    });
+
+    const total = coverItems.length;
+
+    coverItems[coverIndex].classList.add("active");
+
+    coverItems[(coverIndex-1+total)%total].classList.add("left1");
+    coverItems[(coverIndex-2+total)%total].classList.add("left2");
+
+    coverItems[(coverIndex+1)%total].classList.add("right1");
+    coverItems[(coverIndex+2)%total].classList.add("right2");
+}
+
+updateCoverflow();
+
+/* arrows via keyboard */
+document.addEventListener("keydown",(e)=>{
+    if(e.key==="ArrowRight"){
+        coverIndex=(coverIndex+1)%coverItems.length;
+        updateCoverflow();
+    }
+    if(e.key==="ArrowLeft"){
+        coverIndex=(coverIndex-1+coverItems.length)%coverItems.length;
+        updateCoverflow();
+    }
+});
+
+/* mouse wheel rotate */
+document.getElementById("coverflow")
+.addEventListener("wheel",(e)=>{
+    if(e.deltaY>0){
+        coverIndex=(coverIndex+1)%coverItems.length;
+    }else{
+        coverIndex=(coverIndex-1+coverItems.length)%coverItems.length;
+    }
+    updateCoverflow();
+});
+
+/* click image → modal */
+coverItems.forEach((img,i)=>{
+    img.addEventListener("click",()=>{
+        coverIndex=i;
+        updateCoverflow();
+
+        const modal = document.getElementById("imageModal");
+        const modalImg = document.getElementById("modalImg");
+
+        modal.classList.add("active");
+        modalImg.src = img.src;
+        document.body.style.overflow="hidden";
+    });
+});
+
