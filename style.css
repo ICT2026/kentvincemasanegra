@@ -10,8 +10,6 @@ body {
     color: white;
     scroll-behavior: smooth;
     overflow-x: hidden;
-    position:relative;   /* ⭐ ADD */
-    z-index:0;  
 }
 
 .page-hidden{
@@ -48,6 +46,7 @@ header {
     padding: 15px 40px;
     z-index: 999997;
     border-bottom: 1px solid #222;
+    transform: translateZ(0); /* ⭐ FORCE GPU FIX */
 }
 
 /* RIGHT HEADER GROUP */
@@ -1018,8 +1017,8 @@ body{
     align-items:center;
     gap:15px;
     flex:1;
-    max-width:300px;
-    font-size:10px;
+    max-width:500px;
+    font-size:15px;
 }
 
 .reflection-left p{
@@ -1029,15 +1028,16 @@ body{
 }
 
 .reflection-avatar{
-    width:80px;
-    height:80px;
+    width:300px;
+    height:200px;
     object-fit:cover;
     border-radius:50%;
 }
 
 .verified-icon{
     width:18px;
-    margin-left:6px;
+    margin-left:-4px;
+    margin-bottom:-4px;
 }
 
 .digital-citizen{
