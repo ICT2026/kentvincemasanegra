@@ -222,27 +222,26 @@ coverflow.addEventListener("wheel",(e)=>{
     }
 
     updateCoverflow();
+
+/* ARROWS FIX */
+const leftArrow = document.getElementById("coverLeft");
+const rightArrow = document.getElementById("coverRight");
+
+leftArrow.addEventListener("click", ()=>{
+    coverIndex = (coverIndex - 1 + coverItems.length) % coverItems.length;
+    updateCoverflow();
+});
+
+rightArrow.addEventListener("click", ()=>{
+    coverIndex = (coverIndex + 1) % coverItems.length;
+    updateCoverflow();
+});
+
+    
 },{passive:false});
 }
 
 });
-
-const leftArrow = document.getElementById("coverLeft");
-const rightArrow = document.getElementById("coverRight");
-
-if(leftArrow && rightArrow){
-
-    leftArrow.addEventListener("click", ()=>{
-        coverIndex = (coverIndex - 1 + coverItems.length) % coverItems.length;
-        updateCoverflow();
-    });
-
-    rightArrow.addEventListener("click", ()=>{
-        coverIndex = (coverIndex + 1) % coverItems.length;
-        updateCoverflow();
-    });
-
-}
 
 /* USING ICT FOR GOOD animation */
 const goodSection = document.querySelector(".ict-good");
