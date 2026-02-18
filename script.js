@@ -139,6 +139,39 @@ function hackerReveal() {
     }, 60);
 }
 
+/* ===== MATRIX BACKGROUND ===== */
+function createMatrixBits(){
+
+    const intro = document.getElementById("introLoader");
+
+    setInterval(()=>{
+
+        const bit = document.createElement("span");
+        bit.textContent = Math.random() > 0.5 ? "1" : "0";
+
+        bit.style.position = "absolute";
+        bit.style.left = Math.random()*100 + "%";
+        bit.style.top = Math.random()*100 + "%";
+        bit.style.color = "#00f7ff";
+        bit.style.fontFamily = "monospace";
+        bit.style.fontSize = (10 + Math.random()*18)+"px";
+        bit.style.opacity = Math.random();
+        bit.style.pointerEvents = "none";
+        bit.style.transition = "opacity 1s linear";
+
+        intro.appendChild(bit);
+
+        setTimeout(()=>{
+            bit.style.opacity = "0";
+        },700);
+
+        setTimeout(()=>{
+            bit.remove();
+        },1700);
+
+    },80);
+}
+
 function closeIntro(){
     introLoader.style.transition="1.5s ease";
     introLoader.style.filter="blur(25px)";
@@ -149,6 +182,12 @@ function closeIntro(){
         document.body.classList.add("page-reveal");
     },1500);
 }
+
+/* ⭐ START INTRO ANIMATION */
+window.addEventListener("load", () => {
+    createMatrixBits();   // ⭐ matrix rain
+    setTimeout(hackerReveal, 600);
+});
 
 /* ===== 3D COVERFLOW ===== */
 
