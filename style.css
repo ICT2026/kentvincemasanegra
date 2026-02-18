@@ -644,3 +644,62 @@ header {
     0%,100%{ text-shadow:0 0 10px #00f7ff; }
     50%{ text-shadow:0 0 25px #00f7ff,0 0 50px #00f7ff; }
 }
+
+/* ===== APPLE 3D COVERFLOW ===== */
+
+.coverflow-section{
+    perspective:1200px;
+    padding:90px 0 60px;
+    overflow:hidden;
+}
+
+.coverflow{
+    position:relative;
+    height:360px;
+    display:flex;
+    justify-content:center;
+    align-items:center;
+}
+
+.cover-item{
+    position:absolute;
+    width:240px;
+    height:320px;
+    object-fit:cover;
+    border-radius:14px;
+    cursor:pointer;
+    transition:all .7s cubic-bezier(.2,.8,.2,1);
+    opacity:.4;
+    filter:blur(2px) brightness(.6);
+}
+
+/* CENTER IMAGE */
+.cover-item.active{
+    transform:translateX(0) rotateY(0deg) scale(1.25);
+    opacity:1;
+    filter:none;
+    z-index:5;
+    box-shadow:
+        0 0 30px #00f7ff,
+        0 0 80px rgba(0,247,255,.5);
+}
+
+/* LEFT SIDE */
+.cover-item.left1{
+    transform:translateX(-260px) rotateY(45deg) scale(.9);
+    z-index:3;
+}
+.cover-item.left2{
+    transform:translateX(-480px) rotateY(60deg) scale(.75);
+    z-index:2;
+}
+
+/* RIGHT SIDE */
+.cover-item.right1{
+    transform:translateX(260px) rotateY(-45deg) scale(.9);
+    z-index:3;
+}
+.cover-item.right2{
+    transform:translateX(480px) rotateY(-60deg) scale(.75);
+    z-index:2;
+}
