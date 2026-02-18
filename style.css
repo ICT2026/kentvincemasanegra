@@ -690,8 +690,7 @@ header {
     z-index:3;
 }
 .cover-item.left2{
-    transform:translateX(-480px) rotateY(60deg) scale(.75);
-    z-index:2;
+    transform:translateX(-420px) rotateY(60deg) scale(.75);
 }
 
 /* RIGHT SIDE */
@@ -700,6 +699,5 @@ header {
     z-index:3;
 }
 .cover-item.right2{
-    transform:translateX(480px) rotateY(-60deg) scale(.75);
-    z-index:2;
+    transform:translateX(420px) rotateY(-60deg) scale(.75);
 }
