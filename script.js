@@ -133,115 +133,20 @@ function hackerReveal() {
             clearInterval(interval);
 
             setTimeout(() => {
-                startBreakExit();   // NEW EXIT EFFECT
+                closeIntro();
             }, 400);
          }
     }, 60);
 }
 
-function createMatrix(box){
-    setInterval(()=>{
-        let text="";
-        for(let i=0;i<60;i++){
-            text += Math.random()>0.5 ? "1":"0";
-            if(i%10===0) text+="<br>";
-        }
-        box.innerHTML=text;
-    },80);
-}
+function closeIntro(){
+    introLoader.style.transition="1.5s ease";
+    introLoader.style.filter="blur(25px)";
+    introLoader.style.opacity="0";
 
-// start intro after page loads
-window.addEventListener("load", () => {
-    setTimeout(hackerReveal, 600);
-});
-
-const breakGrid = document.getElementById("breakGrid");
-
-function startBreakExit(){
-
-    const cols = 8;
-    const rows = 6;
-    const total = cols * rows;
-
-    // create boxes
-    for(let i=0;i<total;i++){
-        const box = document.createElement("div");
-        box.classList.add("break-box");
-        breakGrid.appendChild(box);
-    }
-
-    const boxes = document.querySelectorAll(".break-box");
-
-    // random order
-    const shuffled = [...boxes].sort(()=>Math.random()-0.5);
-
-    shuffled.forEach((box,index)=>{
-
-        // appear one by one
-        setTimeout(()=>{
-            box.classList.add("break-show");
-
-            // destroy after appear
-            setTimeout(()=>{
-                createMatrix(box);
-                box.classList.add("break-destroy");
-            },120);
-
-        }, index * 35); // speed of destruction
-    });
-
-    // remove intro after all broken
     setTimeout(()=>{
         introLoader.style.display="none";
+        document.body.classList.remove("page-hidden");
         document.body.classList.add("page-reveal");
-    }, total * 35 + 800);
+    },1500);
 }
-
-/* ===== IMAGE SLIDER ===== */
-const slides = document.querySelectorAll(".slide-img");
-const dots = document.querySelectorAll(".dot");
-const slider = document.getElementById("imageSlider");
-
-let currentSlide = 0;
-
-function updateSlider(){
-    slides.forEach((img,i)=>{
-        img.classList.toggle("active", i===currentSlide);
-    });
-
-    dots.forEach((d,i)=>{
-        d.classList.toggle("active", i===currentSlide);
-    });
-
-    const offset = (currentSlide * 245);
-    slider.style.transform = `translateX(${-offset}px)`;
-}
-
-document.getElementById("slideRight").onclick=()=>{
-    currentSlide=(currentSlide+1)%slides.length;
-    updateSlider();
-};
-
-document.getElementById("slideLeft").onclick=()=>{
-    currentSlide=(currentSlide-1+slides.length)%slides.length;
-    updateSlider();
-};
-
-/* scroll wheel control */
-slider.addEventListener("wheel",(e)=>{
-    e.preventDefault();
-    if(e.deltaY>0){
-        currentSlide=(currentSlide+1)%slides.length;
-    }else{
-        currentSlide=(currentSlide-1+slides.length)%slides.length;
-    }
-    updateSlider();
-});
-
-/* open modal when clicked */
-slides.forEach(img=>{
-    img.addEventListener("click",()=>{
-        modal.classList.add("active");
-        modalImg.src = img.src;
-    });
-});
