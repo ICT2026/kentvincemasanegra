@@ -67,38 +67,6 @@ function fillMarquee() {
 
 fillMarquee();
 window.addEventListener("resize", fillMarquee);
-    
-const modal = document.getElementById("imageModal");
-const modalImg = document.getElementById("modalImg");
-
-// Open modal
-document.querySelectorAll(".category-modal, .cover-item").forEach(img => {
-    img.addEventListener("click", function() {
-        modalImg.src = this.src;
-        modal.classList.add("active");
-        document.documentElement.style.overflow = "hidden"; // Disable scroll
-    });
-});
-
-// Close function
-function closeImageModal() {
-    modal.classList.remove("active");
-    document.documentElement.style.overflow = "auto"; // Enable scroll
-}
-
-// Close when clicking outside image
-modal.addEventListener("click", (e) => {
-    if (e.target === modal) {
-        closeImageModal();
-    }
-});
-
-// ESC key
-document.addEventListener("keydown", function(e) {
-    if (e.key === "Escape") {
-        closeImageModal();
-    }
-});
 
 });
 
