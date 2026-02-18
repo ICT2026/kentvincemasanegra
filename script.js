@@ -8,7 +8,7 @@ window.addEventListener("scroll", () => {
         window.pageYOffset || document.documentElement.scrollTop;
 
     backToTop.style.display =
-        scrollPos > 200 ? "block" : "none";
+        scrollPos > 20 ? "block" : "none";
 });
 
 backToTop.addEventListener("click", () => {
@@ -68,6 +68,20 @@ function fillMarquee() {
 fillMarquee();
 window.addEventListener("resize", fillMarquee);
 
+});
+
+document.querySelectorAll('a[href^="#"]').forEach(anchor=>{
+    anchor.addEventListener("click", function(e){
+        const target = document.querySelector(this.getAttribute("href"));
+        if(!target) return;
+
+        e.preventDefault();
+
+        window.scrollTo({
+            top: target.offsetTop - 90, // header height offset
+            behavior: "smooth"
+        });
+    });
 });
 
 /* ================= START AFTER PAGE LOAD ================= */
