@@ -1,20 +1,14 @@
-window.onbeforeunload = function () {
-    window.scrollTo(0,0);
-};
-
 const hamburger = document.getElementById("hamburger");
 const sidePanel = document.getElementById("sidePanel");
 const overlay = document.getElementById("overlay");
 const backToTop = document.getElementById("backToTop");
 
 window.addEventListener("scroll", () => {
+    const scrollPos =
+        window.pageYOffset || document.documentElement.scrollTop;
 
-    if (window.scrollY > 20) {
-        backToTop.style.display = "block";
-    } else {
-        backToTop.style.display = "none";
-    }
-
+    backToTop.style.display =
+        scrollPos > 200 ? "block" : "none";
 });
 
 backToTop.addEventListener("click", () => {
@@ -82,14 +76,14 @@ document.querySelectorAll(".category-modal, .cover-item").forEach(img => {
     img.addEventListener("click", function() {
         modalImg.src = this.src;
         modal.classList.add("active");
-        document.body.style.overflow = "hidden"; // Disable scroll
+        document.documentElement.style.overflow = "hidden"; // Disable scroll
     });
 });
 
 // Close function
 function closeImageModal() {
     modal.classList.remove("active");
-    document.body.style.overflow = "auto"; // Enable scroll
+    document.documentElement.style.overflow = "auto"; // Enable scroll
 }
 
 // Close when clicking outside image
