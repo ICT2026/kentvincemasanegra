@@ -79,6 +79,7 @@ document.querySelectorAll(".section img, .cover-item, .category-modal").forEach(
     img.addEventListener("click", function() {
         modalImg.src = this.src;
         modal.classList.add("active");
+        window.scrollTo({top:0, behavior:"instant"});
         document.body.style.overflow = "hidden"; // Disable scroll
     });
 });
@@ -243,4 +244,25 @@ if(leftArrow && rightArrow){
     });
 
 }
+
+/* USING ICT FOR GOOD animation */
+const goodSection = document.querySelector(".ict-good");
+const goodTitle = document.querySelector(".good-left h1");
+const goodText = document.querySelector(".good-right p");
+
+window.addEventListener("scroll", ()=>{
+    if(!goodSection) return;
+
+    const rect = goodSection.getBoundingClientRect();
+
+    if(rect.top < window.innerHeight - 100){
+        goodTitle.style.opacity = "1";
+        goodTitle.style.transform = "translateY(0)";
+    }
+
+    const glow = Math.min(1, (window.innerHeight - rect.top)/400);
+    goodText.style.textShadow =
+        `0 0 ${20*glow}px rgba(0,247,255,.8)`;
+});
+
 
