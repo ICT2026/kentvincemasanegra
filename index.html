@@ -21,12 +21,25 @@
 
 <!-- Side Panel -->
 <div id="sidePanel" class="side-panel">
+
     <a href="index.html">Home</a>
-    <a href="#category2">About ICT</a>
-    <a href="#">Category 3</a>
-    <a href="#">Category 4</a>
-    <a href="#">Category 5</a>
+
+    <div class="menu-group">
+        <div id="aboutToggle" class="menu-parent">
+            About ICT ▾
+        </div>
+
+        <div id="aboutSub" class="submenu">
+            <a href="#category1">Pre‑Digital Era</a>
+            <a href="#category2">Introduction of Computers</a>
+            <a href="#category3">Digital Shifts</a>
+            <a href="#category4">ICT Boom</a>
+            <a href="#category5">Modern ICT Landscape</a>
+        </div>
+    </div>
+
 </div>
+
 
 <!-- Overlay -->
 <div id="overlay"></div>
@@ -90,13 +103,13 @@
 </div>
 
 <!-- ===== ABOUT ICT TITLE ===== -->
-<div class="ict-title">
+<div id="AboutICT" class="ict-title">
     <h2>ABOUT ICT</h2>
     <div class="ict-line"></div>
 </div>
 
-    <!-- CATEGORY 2 -->
-<section id="category2" class="section">
+    <!-- CATEGORY 1 -->
+<section id="category1" class="section">
     <div class="text-left">
         <h3>Pre-Digital Era</h3>
         <p>
@@ -108,51 +121,60 @@
     </div>
 </section>
 
-<!-- ===== CATEGORY FLOW ===== -->
-<section class="timeline">
+<section class="category-flow">
 
-<div class="down-arrow">↓</div>
-
-<div class="timeline-block">
-    <img src="image/2.jpg">
-    <h3>Introduction of Computers (1980s)</h3>
-    <p>
-    In the 1980s, computers became popular in homes, schools, and offices through personal computers made by IBM and Apple, making work, study, and communication easier for many people.
-    </p>
+<!-- CATEGORY 2 -->
+<div id="category2" class="category-row">
+    <div class="category-img">
+        <img src="image/2.jpg" class="category-modal">
+    </div>
+    <div class="category-text">
+        <h3>Introduction of Computers (1980s)</h3>
+        <p>
+        In the 1980s, computers became popular in homes, schools, and offices through personal computers made by IBM and Apple, making work, study, and communication easier for many people.
+        </p>
+    </div>
 </div>
 
-<div class="down-arrow">↓</div>
-
-<div class="timeline-block">
-    <img src="image/3.jpg">
-    <h3>Digital Shifts (1990s‑2000s)</h3>
-    <p>
-    In the Philippines, digital shifts transformed daily life, education, and business as people started using computers, the internet, and smartphones instead of relying on typewriters, printed letters, and landline phones.
-    </p>
+<!-- CATEGORY 3 -->
+<div id="category3" class="category-row reverse">
+    <div class="category-img">
+        <img src="image/3.jpg" class="category-modal">
+    </div>
+    <div class="category-text">
+        <h3>Digital Shifts (1990s‑2000s)</h3>
+        <p>
+        In the Philippines, digital shifts transformed daily life, education, and business as people started using computers, the internet, and smartphones instead of relying on traditional tools.
+        </p>
+    </div>
 </div>
 
-<div class="down-arrow">↓</div>
-
-<div class="timeline-block">
-    <img src="image/4.jpg">
-    <h3>ICT Boom (2000s‑2010s)</h3>
-    <p>
-    The ICT boom in the Philippines during the 2000s–2010s was marked by rapid growth of computers, mobile phones, the internet, and social media, greatly improving communication, business, and education.
-    </p>
+<!-- CATEGORY 4 -->
+<div id="category4" class="category-row">
+    <div class="category-img">
+        <img src="image/4.jpg" class="category-modal">
+    </div>
+    <div class="category-text">
+        <h3>ICT Boom (2000s‑2010s)</h3>
+        <p>
+        The ICT boom marked rapid growth of computers, mobile phones, the internet, and social media, greatly improving communication, business, and education.
+        </p>
+    </div>
 </div>
 
-<div class="down-arrow">↓</div>
-
-<div class="timeline-block">
-    <img src="image/5.jpg">
-    <h3>Modern ICT Landscape (2010s‑Present)</h3>
-    <p>
-    The modern ICT landscape is defined by high‑speed internet, smartphones, cloud computing, and social media, allowing instant communication and digital services for education and work.
-    </p>
+<!-- CATEGORY 5 -->
+<div id="category5" class="category-row reverse">
+    <div class="category-img">
+        <img src="image/5.jpg" class="category-modal">
+    </div>
+    <div class="category-text">
+        <h3>Modern ICT Landscape (2010s‑Present)</h3>
+        <p>
+        Defined by high‑speed internet, smartphones, cloud computing, and social platforms allowing instant communication and digital services.
+        </p>
+    </div>
 </div>
-
 </section>
-
 
 <footer class="footer">
     <div class="footer-inner">
