@@ -73,7 +73,6 @@ document.addEventListener("DOMContentLoaded", function() {
     
 const modal = document.getElementById("imageModal");
 const modalImg = document.getElementById("modalImg");
-const closeModal = document.getElementById("closeModal");
 
 // Open modal
 document.querySelectorAll(".section img, .cover-item, .category-modal").forEach(img => {
@@ -89,9 +88,6 @@ function closeImageModal() {
     modal.classList.remove("active");
     document.body.style.overflow = "auto"; // Enable scroll
 }
-
-// Close when clicking X
-closeModal.addEventListener("click", closeImageModal);
 
 // Close when clicking outside image
 modal.addEventListener("click", (e) => {
