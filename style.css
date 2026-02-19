@@ -408,21 +408,6 @@ body{
     overflow: hidden;
 }
 
-#introLoader::before {
-    content: "";
-    position: absolute;
-    inset: 0;
-    background:
-        repeating-linear-gradient(
-            0deg,
-            rgba(0,247,255,0.05) 0px,
-            rgba(0,247,255,0.05) 1px,
-            transparent 1px,
-            transparent 40px
-        );
-    animation: scanMove 6s linear infinite;
-}
-
 .intro-content::before {
     content:"";
     position:absolute;
@@ -477,11 +462,6 @@ body{
 @keyframes logoPulse {
     0%,100% { transform: scale(1); }
     50% { transform: scale(1.08); }
-}
-
-@keyframes scanMove {
-    from { transform: translateY(0); }
-    to { transform: translateY(40px); }
 }
 
 @keyframes pulseBg {
@@ -1037,17 +1017,29 @@ body{
     color:#00f7ff;
 }
 
+.dc-header span{
+    display:inline-block;
+    transition: transform .4s ease;
+    font-weight:bold;
+}
+
+.dc-item.active .dc-header span{
+    transform: rotate(45deg); /* + becomes X smoothly */
+}
+
 .dc-content{
     max-height:0;
     overflow:hidden;
-    transition:.4s;
+    transition:max-height .5s ease, opacity .4s ease;
+    opacity:0;
     color:#ccc;
     margin-top:5px;
     font-size:14px;
 }
 
 .dc-item.active .dc-content{
-    max-height:200px;
+    max-height:300px;
+    opacity:1;
 }
 
 .category-img img,
