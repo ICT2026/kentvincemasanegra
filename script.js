@@ -168,9 +168,14 @@ function closeIntro(){
 
     setTimeout(()=>{
         document.body.classList.remove("loading");
-	document.body.classList.add("page-reveal");
-	introLoader.style.display="none";
-	document.body.style.overflow = "auto";
+        document.body.classList.add("page-reveal");
+        introLoader.style.display="none";
+        document.body.style.overflow = "auto";
+
+        // ✅ ADD THESE TWO LINES HERE
+        window.removeEventListener("wheel", preventScroll);
+        window.removeEventListener("touchmove", preventScroll);
+
         window.dispatchEvent(new Event("scroll"));
     },900);
 }
@@ -255,10 +260,38 @@ window.addEventListener("scroll", ()=>{
         `0 0 ${20*glow}px rgba(0,247,255,.8)`;
 });
 
-document.querySelectorAll(".dc-header").forEach(item=>{
-    item.addEventListener("click",()=>{
-        item.parentElement.classList.toggle("active");
+document.querySelectorAll(".dc-header").forEach(header=>{
+    header.addEventListener("click",()=>{
+
+        const currentItem = header.parentElement;
+        const allItems = document.querySelectorAll(".dc-item");
+
+        allItems.forEach(item=>{
+            if(item !== currentItem){
+                item.classList.remove("active");
+                item.querySelector("span").textContent = "+";
+            }
+        });
+
+        currentItem.classList.toggle("active");
+
+        const icon = header.querySelector("span");
+        if(currentItem.classList.contains("active")){
+            icon.textContent = "×";
+        } else {
+            icon.textContent = "+";
+        }
     });
 });
     
+
+window.addEventListener("wheel", preventScroll, { passive:false });
+window.addEventListener("touchmove", preventScroll, { passive:false });
+
+function preventScroll(e){
+    if(document.body.classList.contains("loading")){
+        e.preventDefault();
+    }
+}
+
 }); // ✅ CLOSE window.load EVENT
