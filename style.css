@@ -12,6 +12,11 @@ body {
     overflow-x: hidden;
 }
 
+/* Hide header during intro */
+body.loading header{
+    display:none;
+}
+
 .page-hidden{
     overflow:hidden;
 }
@@ -118,7 +123,7 @@ body{
     flex-direction: column;
     padding-top: 90px;
     transition: 0.3s ease;
-    z-index: 999998; /* HIGHER than header */
+    z-index: 1000000; /* HIGHER than header */
 }
 
 .side-panel.active {
@@ -374,9 +379,10 @@ body{
     border: 1px solid rgba(255,255,255,0.2);
     border-radius: 30px;
     cursor: pointer;
-    display: none;
-    transition: 0.3s ease;
-    z-index:999999;
+    opacity:0;
+    pointer-events:none;
+    transition:.3s;
+    z-index:1000001;
 }
 
 #backToTop:hover {
@@ -1048,4 +1054,3 @@ body{
 .cover-item{
     cursor:default;
 }
-
