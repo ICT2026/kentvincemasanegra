@@ -36,25 +36,35 @@ if(aboutToggle && aboutSub){
     });
 }
 
-// Open panel
-hamburger.addEventListener("click", () => {
+// ===== SIDE PANEL OPEN/CLOSE with body scroll lock =====
+if (hamburger && sidePanel && overlay) {
+  function openPanel() {
     sidePanel.classList.add("active");
     overlay.classList.add("active");
-});
+    document.body.classList.add("panel-open"); // lock page scroll
+  }
 
-// Close panel when clicking overlay
-overlay.addEventListener("click", () => {
+  function closePanel() {
     sidePanel.classList.remove("active");
     overlay.classList.remove("active");
-});
+    document.body.classList.remove("panel-open"); // restore scroll
+  }
 
-// Close panel when clicking menu link
-document.querySelectorAll(".side-panel a").forEach(link => {
-    link.addEventListener("click", () => {
-        sidePanel.classList.remove("active");
-        overlay.classList.remove("active");
-    });
-});
+  hamburger.addEventListener("click", openPanel);
+  overlay.addEventListener("click", closePanel);
+
+  // Close when clicking any link inside the panel
+  document.querySelectorAll(".side-panel a").forEach(link => {
+    link.addEventListener("click", closePanel);
+  });
+
+  // Close on ESC
+  document.addEventListener("keydown", (e) => {
+    if (e.key === "Escape" && sidePanel.classList.contains("active")) {
+      closePanel();
+    }
+  });
+}
 
 document.addEventListener("DOMContentLoaded", function() {
     
@@ -288,10 +298,12 @@ document.querySelectorAll(".dc-header").forEach(header=>{
 window.addEventListener("wheel", preventScroll, { passive:false });
 window.addEventListener("touchmove", preventScroll, { passive:false });
 
+
 function preventScroll(e){
-    if(document.body.classList.contains("loading")){
-        e.preventDefault();
-    }
+  const isLoading = document.body.classList.contains("loading");
+  if (!isLoading) return;     // only block during intro
+
+  e.preventDefault();
 }
 
 /* ===== REFLECTION MODAL ===== */
