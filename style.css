@@ -1126,10 +1126,6 @@ header {
 /* MOBILE PHONES */
 @media (max-width: 768px){
 
-    body{
-        padding-top: 70px;
-    }
-
     header{
         padding: 10px 20px;
     }
