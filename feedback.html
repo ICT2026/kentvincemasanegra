@@ -9,11 +9,32 @@
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
 
 <style>
+
+:root{
+    --bg:#0f1115;
+    --card:#171a21;
+    --border:#23262f;
+    --text:#ffffff;
+    --accent:#4da3ff;
+}
+
+/* LIGHT MODE AUTO */
+@media (prefers-color-scheme: light){
+    :root{
+        --bg:#f4f6fb;
+        --card:#ffffff;
+        --border:#d9dde7;
+        --text:#111827;
+        --accent:#2563eb;
+    }
+}
+    
 body{
     margin:0;
     font-family:'Inter',sans-serif;
-    background:#0f1115;
-    color:white;
+    background:var(--bg);
+    color:var(--text);
+    transition:.4s;
 }
 
 /* HEADER */
@@ -47,8 +68,8 @@ header{
 
 /* POST CARD */
 .post-card{
-    background:#171a21;
-    border:1px solid #23262f;
+    background:var(--card);
+    border:1px solid var(--border);
     border-radius:18px;
     padding:20px;
     transition:.35s cubic-bezier(.22,1,.36,1);
@@ -130,20 +151,20 @@ header{
 
 /* animated glowing border */
 .modal-content{
-    width:90%;
+    width:92%;
     max-width:420px;
-    background:#171a21;
-    padding:28px;
-    border-radius:18px;
+    padding:30px;
+    border-radius:20px;
     position:relative;
-    overflow:hidden;
+    background:
+        linear-gradient(var(--card),var(--card)) padding-box,
+        linear-gradient(120deg,#4da3ff,#00ffd5,#4da3ff) border-box;
+    border:2px solid transparent;
+    backdrop-filter:blur(18px);
     animation:modalPop .35s cubic-bezier(.22,1,.36,1);
-}
-
-.modal-content{
     box-shadow:
-        0 0 0 1px rgba(77,163,255,.2),
-        0 20px 60px rgba(0,0,0,.6);
+        0 0 40px rgba(77,163,255,.25),
+        0 20px 70px rgba(0,0,0,.6);
 }
     
 /* animated border glow */
@@ -178,19 +199,41 @@ header{
     }
 }
 
-input, textarea{
+.modal-content::after{
+    content:"";
+    position:absolute;
+    inset:0;
+    border-radius:20px;
+    background:radial-gradient(
+        circle at top,
+        rgba(77,163,255,.25),
+        transparent 60%
+    );
+    pointer-events:none;
+    animation:glowPulse 4s ease-in-out infinite;
+}
+
+@keyframes glowPulse{
+    0%,100%{opacity:.4;}
+    50%{opacity:.9;}
+}
+input,
+textarea{
+    display:block;
     width:100%;
-    margin:8px 0;
-    padding:12px;
-    border-radius:8px;
-    border:1px solid #2b2f38;
-    background:#0f1115;
-    color:white;
+    box-sizing:border-box;
+    margin:10px 0;
+    padding:12px 14px;
+    border-radius:10px;
+    border:1px solid var(--border);
+    background:rgba(0,0,0,.25);
+    color:var(--text);
+    font-size:14px;
 }
 
 textarea{
     width:100%;
-    min-height:80px;
+    min-height:85px;
     max-height:120px;
     resize:none;
     overflow:auto;
@@ -420,6 +463,16 @@ window.deletePost=async(id)=>{
  await deleteDoc(doc(db,"posts",id));
 }
 
+const modal = document.getElementById("modal");
+const modalContent = document.querySelector(".modal-content");
+
+/* close when clicking outside */
+modal.addEventListener("click",(e)=>{
+    if(!modalContent.contains(e.target)){
+        modal.style.display="none";
+    }
+});
+    
 </script>
 </body>
 </html>
