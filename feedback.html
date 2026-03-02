@@ -262,5 +262,38 @@ function renderPosts(){
 renderPosts();
 
 </script>
+
+<!-- FIREBASE SDK -->
+<script type="module">
+
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+import { 
+  getFirestore,
+  collection,
+  addDoc,
+  getDocs,
+  serverTimestamp,
+  query,
+  orderBy,
+  deleteDoc,
+  doc
+} from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+
+/* ===== YOUR FIREBASE CONFIG ===== */
+const firebaseConfig = {
+  apiKey: "AIzaSyAuYZ68uU9Iw8rN-0Kfm3Wzul2vpJMD6XE",
+  authDomain: "kent-da153.firebaseapp.com",
+  projectId: "kent-da153",
+  storageBucket: "kent-da153.firebasestorage.app",
+  messagingSenderId: "386160813839",
+  appId: "1:386160813839:web:b3f6e6ca211e9b742b007a"
+};
+
+/* ===== INITIALIZE ===== */
+const app = initializeApp(firebaseConfig);
+const db = getFirestore(app);
+
+</script>
+    
 </body>
 </html>
