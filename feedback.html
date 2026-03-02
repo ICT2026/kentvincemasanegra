@@ -269,31 +269,52 @@ to{opacity:1;transform:translateY(0)}
 
 <body>
 
-<header>
+<header style="display:flex;justify-content:space-between;align-items:center;">
 <a href="impact.html" class="back-btn">← Back</a>
-</header>
 
+<div id="authArea">
+    <button id="loginBtn" onclick="openLogin()">Login</button>
+
+    <button id="logoutBtn"
+        onclick="logout()"
+        style="display:none;background:#ff4d4d;">
+        ⎋ Logout
+    </button>
+</div>
+</header>
+    
 <div class="dashboard">
 <h2>Community Feedback</h2>
 <div class="posts-grid" id="posts"></div>
 </div>
-
-<button class="floating-btn" onclick="openModal()">
-Start Posting
-</button>
 
 <!-- MODAL -->
 <div class="modal" id="modal">
 <div class="modal-content">
 
 <div id="authBox">
-<h3>Register First</h3>
+<h3>Login</h3>
+
+<input id="loginUsername" placeholder="Username">
+<input id="loginPassword" type="password" placeholder="Password">
+
+<button onclick="login()">Login</button>
+
+<p style="text-align:center;margin:10px 0;">— or —</p>
+
+<button onclick="showRegister()">Register Account</button>
+</div>
+
+<div id="registerBox" style="display:none;">
+<h3>Create Account</h3>
+
 <input id="fname" placeholder="First Name">
 <input id="mname" placeholder="Middle Name">
 <input id="lname" placeholder="Last Name">
 <input id="username" placeholder="Username">
 <input id="password" type="password" placeholder="Password">
-<button onclick="register()">Continue</button>
+
+<button onclick="register()">Create Account</button>
 </div>
 
 <div id="postBox" style="display:none;">
@@ -345,37 +366,86 @@ const ADMIN_USER="admin";
 let currentUser =
 JSON.parse(localStorage.getItem("currentUser"));
 
+const loginBtn = document.getElementById("loginBtn");
+const logoutBtn = document.getElementById("logoutBtn");
+
+/* show correct button */
+function updateAuthUI(){
+    if(currentUser){
+        loginBtn.style.display="none";
+        logoutBtn.style.display="inline-block";
+    }else{
+        loginBtn.style.display="inline-block";
+        logoutBtn.style.display="none";
+    }
+}
+updateAuthUI();
+
+window.openLogin = () => {
+    modal.style.display="flex";
+    authBox.style.display="block";
+    registerBox.style.display="none";
+    postBox.style.display="none";
+};
+
+window.showRegister = ()=>{
+    authBox.style.display="none";
+    registerBox.style.display="block";
+};
+
+window.login = ()=>{
+    const user = localStorage.getItem("registeredUser");
+    if(!user) return alert("No account found");
+
+    const saved = JSON.parse(user);
+
+    if(
+        loginUsername.value === saved.username &&
+        loginPassword.value === saved.password
+    ){
+        currentUser = saved;
+        localStorage.setItem("currentUser",JSON.stringify(saved));
+
+        modal.style.display="none";
+        updateAuthUI();
+    }else{
+        alert("Invalid login");
+    }
+};
+    
 /* MODAL */
 const modal = document.getElementById("modal");
 
 window.openModal = () => {
-    modal.style.display = "flex";
-
-    if(currentUser){
-        document.getElementById("authBox").style.display="none";
-        document.getElementById("postBox").style.display="block";
-    }else{
-        document.getElementById("authBox").style.display="block";
-        document.getElementById("postBox").style.display="none";
+    if(!currentUser){
+        openLogin();
+        return;
     }
+
+    modal.style.display="flex";
+    authBox.style.display="none";
+    registerBox.style.display="none";
+    postBox.style.display="block";
 };
 
 /* REGISTER */
-window.register = () => {
-
+window.register = ()=>{
  const user = {
-   name: fname.value + " " + mname.value + " " + lname.value,
+   name: fname.value+" "+mname.value+" "+lname.value,
    username: username.value,
-   photo:
-   "https://cdn-icons-png.flaticon.com/512/7175/7175408.png"
+   password: password.value,
+   photo:"https://cdn-icons-png.flaticon.com/512/7175/7175408.png"
  };
 
- localStorage.setItem("currentUser", JSON.stringify(user));
+ localStorage.setItem("registeredUser",JSON.stringify(user));
+ alert("Account created! Please login.");
+ showRegister(false);
+};
 
- currentUser = user;
-
- document.getElementById("authBox").style.display="none";
- document.getElementById("postBox").style.display="block";
+window.logout = ()=>{
+    localStorage.removeItem("currentUser");
+    currentUser=null;
+    updateAuthUI();
 };
 
 /* ADD POST */
@@ -463,10 +533,8 @@ window.deletePost=async(id)=>{
  await deleteDoc(doc(db,"posts",id));
 }
 
-const modal = document.getElementById("modal");
 const modalContent = document.querySelector(".modal-content");
 
-/* close when clicking outside */
 modal.addEventListener("click",(e)=>{
     if(!modalContent.contains(e.target)){
         modal.style.display="none";
