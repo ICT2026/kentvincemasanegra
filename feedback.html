@@ -161,31 +161,9 @@ header{
         linear-gradient(120deg,#4da3ff,#00ffd5,#4da3ff) border-box;
     border:2px solid transparent;
     backdrop-filter:blur(18px);
-    animation:modalPop .35s cubic-bezier(.22,1,.36,1);
     box-shadow:
         0 0 40px rgba(77,163,255,.25),
         0 20px 70px rgba(0,0,0,.6);
-}
-    
-/* animated border glow */
-.modal-content::before{
-    content:"";
-    position:absolute;
-    inset:-2px;
-    border-radius:18px;
-    background:linear-gradient(
-        120deg,
-        transparent,
-        #4da3ff,
-        transparent
-    );
-    animation:borderMove 4s linear infinite;
-    z-index:-1;
-}
-
-@keyframes borderMove{
-    0%{transform:translateX(-100%)}
-    100%{transform:translateX(100%)}
 }
 
 @keyframes modalPop{
@@ -264,6 +242,35 @@ button{
 from{opacity:0;transform:translateY(25px)}
 to{opacity:1;transform:translateY(0)}
 }
+
+.primary-btn{
+    width:100%;
+    background:linear-gradient(135deg,#4da3ff,#2563eb);
+    border:none;
+    padding:13px;
+    border-radius:12px;
+    font-weight:600;
+    letter-spacing:.3px;
+    transition:.25s;
+}
+
+.primary-btn:hover{
+    transform:translateY(-1px);
+    box-shadow:0 8px 20px rgba(77,163,255,.35);
+}
+
+.link-action{
+    color:var(--accent);
+    cursor:pointer;
+    text-decoration:underline;
+    font-weight:500;
+    transition:.2s;
+}
+
+.link-action:hover{
+    opacity:.7;
+}
+    
 </style>
 </head>
 
@@ -298,11 +305,15 @@ to{opacity:1;transform:translateY(0)}
 <input id="loginUsername" placeholder="Username">
 <input id="loginPassword" type="password" placeholder="Password">
 
-<button onclick="emailLogin()">Login</button>
-
+<button class="primary-btn" onclick="emailLogin()">Login</button>
+    
 <p style="text-align:center;margin:10px 0;">— or —</p>
 
-<button onclick="showRegister()">Register Account</button>
+<p style="text-align:center;margin-top:12px;">
+    <span class="link-action" onclick="showRegister()">
+        Create an account
+    </span>
+</p>
 </div>
 
 <div id="registerBox" style="display:none;">
@@ -314,7 +325,7 @@ to{opacity:1;transform:translateY(0)}
 <input id="username" placeholder="Username">
 <input id="password" type="password" placeholder="Password">
 
-<button onclick="register()">Create Account</button>
+<button class="primary-btn" onclick="register()">Create Account</button>
 </div>
 
 <div id="postBox" style="display:none;">
