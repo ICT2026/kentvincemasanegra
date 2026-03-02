@@ -417,7 +417,7 @@ Continue with Google
 <input id="fname" placeholder="First Name">
 <input id="mname" placeholder="Middle Name">
 <input id="lname" placeholder="Last Name">
-<input id="username" placeholder="Username">
+<input id="loginUsername" placeholder="Email">
 <input id="password" type="password" placeholder="Password">
 
 <button class="primary-btn" onclick="register()">Create Account</button>
@@ -709,8 +709,14 @@ onAuthStateChanged(auth,(user)=>{
         logoutBtn.style.display="none";
     }
 
+const createPostBtn =
+document.getElementById("createPostBtn");
+
+if(createPostBtn){
     createPostBtn.style.display =
-    user ? "block" : "none";
+        user ? "block" : "none";
+}
+    
 });
     
 /* ================= EMAIL LOGIN ================= */
@@ -747,10 +753,14 @@ postStatus.textContent="Invalid account.";
 
 /* ================= REGISTER ================= */
 window.register = async ()=>{
-    const email = loginUsername.value;
-    const pass = loginPassword.value;
+    const email = document.getElementById("username").value;
+    const pass = document.getElementById("password").value;
 
-    await createUserWithEmailAndPassword(auth,email,pass);
+    try{
+        await createUserWithEmailAndPassword(auth,email,pass);
+    }catch(err){
+        alert(err.message);
+    }
 };
 
 /* ================= LOGOUT ================= */
