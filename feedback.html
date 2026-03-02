@@ -49,14 +49,34 @@ header{
 .post-card{
     background:#171a21;
     border:1px solid #23262f;
-    border-radius:16px;
-    padding:18px;
-    animation:fadeUp .6s ease;
-    transition:.35s;
+    border-radius:18px;
+    padding:20px;
+    transition:.35s cubic-bezier(.22,1,.36,1);
+    position:relative;
+    overflow:hidden;
 }
+
+.post-card::after{
+    content:"";
+    position:absolute;
+    inset:0;
+    background:linear-gradient(
+        120deg,
+        transparent,
+        rgba(77,163,255,.15),
+        transparent
+    );
+    opacity:0;
+    transition:.4s;
+}
+
 .post-card:hover{
-    transform:translateY(-6px);
-    box-shadow:0 20px 40px rgba(0,0,0,.5);
+    transform:translateY(-8px);
+    box-shadow:0 25px 55px rgba(0,0,0,.6);
+}
+
+.post-card:hover::after{
+    opacity:1;
 }
 
 .post-top{
@@ -100,18 +120,62 @@ header{
 .modal{
     position:fixed;
     inset:0;
-    background:rgba(0,0,0,.7);
+    background:rgba(0,0,0,.75);
+    backdrop-filter:blur(6px);
     display:none;
     justify-content:center;
     align-items:center;
+    animation:fadeIn .3s ease;
 }
 
+/* animated glowing border */
 .modal-content{
     width:90%;
     max-width:420px;
     background:#171a21;
-    padding:25px;
-    border-radius:16px;
+    padding:28px;
+    border-radius:18px;
+    position:relative;
+    overflow:hidden;
+    animation:modalPop .35s cubic-bezier(.22,1,.36,1);
+}
+
+.modal-content{
+    box-shadow:
+        0 0 0 1px rgba(77,163,255,.2),
+        0 20px 60px rgba(0,0,0,.6);
+}
+    
+/* animated border glow */
+.modal-content::before{
+    content:"";
+    position:absolute;
+    inset:-2px;
+    border-radius:18px;
+    background:linear-gradient(
+        120deg,
+        transparent,
+        #4da3ff,
+        transparent
+    );
+    animation:borderMove 4s linear infinite;
+    z-index:-1;
+}
+
+@keyframes borderMove{
+    0%{transform:translateX(-100%)}
+    100%{transform:translateX(100%)}
+}
+
+@keyframes modalPop{
+    from{
+        opacity:0;
+        transform:scale(.85) translateY(20px);
+    }
+    to{
+        opacity:1;
+        transform:scale(1);
+    }
 }
 
 input, textarea{
@@ -125,8 +189,17 @@ input, textarea{
 }
 
 textarea{
-    height:90px;
+    width:100%;
+    min-height:80px;
+    max-height:120px;
     resize:none;
+    overflow:auto;
+    padding:12px;
+    border-radius:10px;
+    border:1px solid #2b2f38;
+    background:#0f1115;
+    color:white;
+    font-size:14px;
 }
 
 button{
@@ -230,42 +303,59 @@ let currentUser =
 JSON.parse(localStorage.getItem("currentUser"));
 
 /* MODAL */
-window.openModal=()=>{
- document.getElementById("modal").style.display="flex";
+const modal = document.getElementById("modal");
 
- if(currentUser){
-   authBox.style.display="none";
-   postBox.style.display="block";
- }
-}
+window.openModal = () => {
+    modal.style.display = "flex";
+
+    if(currentUser){
+        document.getElementById("authBox").style.display="none";
+        document.getElementById("postBox").style.display="block";
+    }else{
+        document.getElementById("authBox").style.display="block";
+        document.getElementById("postBox").style.display="none";
+    }
+};
 
 /* REGISTER */
-window.register=()=>{
- const user={
-   name: fname.value+" "+mname.value+" "+lname.value,
-   username: username.value
+window.register = () => {
+
+ const user = {
+   name: fname.value + " " + mname.value + " " + lname.value,
+   username: username.value,
+   photo:
+   "https://cdn-icons-png.flaticon.com/512/7175/7175408.png"
  };
- localStorage.setItem("currentUser",JSON.stringify(user));
- location.reload();
-}
+
+ localStorage.setItem("currentUser", JSON.stringify(user));
+
+ currentUser = user;
+
+ document.getElementById("authBox").style.display="none";
+ document.getElementById("postBox").style.display="block";
+};
 
 /* ADD POST */
-window.addPost=async()=>{
+window.addPost = async () => {
+
  if(!currentUser) return alert("Register first");
 
- const text=commentText.value.trim();
+ const text = commentText.value.trim();
  if(!text) return;
 
  await addDoc(collection(db,"posts"),{
-   name:currentUser.name,
-   username:currentUser.username,
-   text:text,
-   reply:"",
-   time:serverTimestamp()
+   name: currentUser.name,
+   username: currentUser.username,
+   userPhoto: currentUser.photo,
+   text: text,
+   likes: 0,
+   reply: "",
+   time: serverTimestamp()
  });
 
  commentText.value="";
-}
+ modal.style.display="none";
+};
 
 /* REALTIME POSTS */
 const postsContainer=document.getElementById("posts");
@@ -285,7 +375,7 @@ onSnapshot(q,(snapshot)=>{
    card.innerHTML=`
    <div class="post-top">
      <img class="avatar"
-     src="https://cdn-icons-png.flaticon.com/512/149/149071.png">
+     src="${p.userPhoto || 'https://cdn-icons-png.flaticon.com/512/7175/7175408.png'}">
      <div>
        <div class="username">${p.name}</div>
        <div class="time">
@@ -313,7 +403,7 @@ onSnapshot(q,(snapshot)=>{
    postsContainer.appendChild(card);
  });
 });
-
+    
 /* ADMIN REPLY */
 window.replyPost=async(id)=>{
  const reply=prompt("Admin reply:");
