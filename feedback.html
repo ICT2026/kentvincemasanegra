@@ -47,6 +47,9 @@ header{
     padding:15px 25px;
     background:#12141a;
     border-bottom:1px solid #23262f;
+    position:sticky;
+    top:0;
+    z-index:1000;
 }
 
 .back-btn{
@@ -85,8 +88,9 @@ header{
 
 .posts-grid{
     display:grid;
-    grid-template-columns:repeat(auto-fit,minmax(280px,1fr));
+    grid-template-columns:repeat(auto-fill, 320px);
     gap:22px;
+    justify-content:center;
 }
 
 /* POST CARD */
@@ -97,9 +101,16 @@ header{
     padding:20px;
     transition:.35s cubic-bezier(.22,1,.36,1);
     position:relative;
-    overflow:hidden;
+    word-wrap:break-word;
 }
 
+.post-card p{
+    display:-webkit-box;
+    -webkit-line-clamp:5;
+    -webkit-box-orient:vertical;
+    overflow:hidden;
+}
+    
 .post-card::after{
     content:"";
     position:absolute;
@@ -372,20 +383,27 @@ to{opacity:1;transform:translateY(0)}
 <span id="logoutBtn" class="auth-link" onclick="logout()" style="display:none;">Logout</span>
 </div>
 </header>
+<div style="
+    padding:20px;
+    max-width:1100px;
+    margin:auto;
+">
+    <button id="createPostBtn"
+        onclick="openModal()"
+        style="
+        display:none;
+        padding:10px 18px;
+        border-radius:30px;
+        background:#4da3ff;
+        color:white;
+        font-weight:600;
+        cursor:pointer;">
+        ✏️ Create Post
+    </button>
+</div>
     
 <div class="dashboard">
-
-<div style="display:flex; justify-content:flex-start; margin-bottom:20px;">
-<button id="createPostBtn"
-class="create-btn"
-onclick="openModal()"
-style="display:none;">
-✏️ Create Post
-</button>
-</div>
-
 <div class="posts-grid" id="posts"></div>
-
 </div>
 
 <!-- MODAL -->
@@ -655,21 +673,24 @@ ${(p.replies && p.replies.length > 0) ?
    `).join("")
 : ""}
 
-${currentUser ? `
-<div style="margin-top:8px; font-size:14px; color:var(--accent); cursor:pointer;"
-onclick="replyPost('${id}')">
-Reply
-</div>
-` : ""}
-
 <div class="post-actions">
    <button class="like-btn"
    onclick="toggleLike('${id}')">
    ${liked ? "❤️" : "🤍"} ${(p.likedBy || []).length}
    </button>
+
+   ${currentUser ? `
+   <div style="
+        margin-top:8px;
+        font-size:14px;
+        color:var(--accent);
+        cursor:pointer;"
+        onclick="replyPost('${id}')">
+        Reply
+   </div>
+   ` : ""}
 </div>
 `;
-
         postsContainer.appendChild(card);
     });
 }
@@ -786,10 +807,15 @@ window.emailLogin = async () => {
 
     try{
         await signInWithEmailAndPassword(auth,email,pass);
+
         postStatus.className="post-status success";
         postStatus.textContent="✅ Login successful";
-        modal.style.display="none";
-        status.textContent="";
+
+        setTimeout(()=>{
+            modal.style.display="none";
+            postStatus.textContent="";
+        },800);
+
     }catch(error){
         postStatus.className="post-status error";
         postStatus.textContent = error.message;
