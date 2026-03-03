@@ -146,21 +146,6 @@ header{
     border-radius:6px;
 }
 
-/* FLOAT BUTTON */
-.floating-btn{
-    position:fixed;
-    right:25px;
-    bottom:25px;
-    z-index:9999;
-    background:#4da3ff;
-    border:none;
-    padding:16px 22px;
-    border-radius:50px;
-    font-weight:600;
-    cursor:pointer;
-    box-shadow:0 0 20px rgba(77,163,255,.5);
-}
-
 /* MODAL */
 .modal{
     position:fixed;
@@ -360,6 +345,17 @@ to{opacity:1;transform:translateY(0)}
     opacity:1;
     transform:scale(1.2);
 }
+
+.auth-link{
+    cursor:pointer;
+    text-decoration:underline;
+    font-weight:500;
+    transition:.2s;
+}
+
+.auth-link:hover{
+    color:var(--accent);
+}
     
 </style>
 </head>
@@ -372,18 +368,24 @@ to{opacity:1;transform:translateY(0)}
 <h2 style="margin:0;">Community Feedback</h2>
 
 <div id="authArea" style="position:absolute; right:20px;">
-    <button id="loginBtn" onclick="openLogin()">Login</button>
-    <button id="logoutBtn"
-        onclick="logout()"
-        style="display:none;background:#ff4d4d;">
-        ⎋ Logout
-    </button>
+<span id="loginBtn" class="auth-link" onclick="openLogin()">Login</span>
+<span id="logoutBtn" class="auth-link" onclick="logout()" style="display:none;">Logout</span>
 </div>
 </header>
     
 <div class="dashboard">
 
+<div style="display:flex; justify-content:flex-end; margin-bottom:20px;">
+<button id="createPostBtn"
+class="create-btn"
+onclick="openModal()"
+style="display:none;">
+✏️ Create Post
+</button>
+</div>
+
 <div class="posts-grid" id="posts"></div>
+
 </div>
 
 <!-- MODAL -->
@@ -492,8 +494,6 @@ let isAdmin = false;
 let lastPostTime = 0; // anti‑spam timer
 const loginBtn = document.getElementById("loginBtn");
 const logoutBtn = document.getElementById("logoutBtn");
-const createPostBtn =
-document.getElementById("createPostBtn");
     
 window.openLogin = () => {
     modal.style.display="flex";
@@ -620,10 +620,8 @@ function renderPosts(snapshot){
 
         card.innerHTML = `
 <div style="position:absolute; top:12px; right:12px; display:flex; gap:10px; font-size:18px; cursor:pointer;">
-${p.uid === currentUser?.uid ? `
+${currentUser && isAdmin ? `
 <span onclick="editPost('${id}', \`${p.text}\`)">✏️</span>
-` : ""}
-${isAdmin ? `
 <span onclick="deletePost('${id}')">🗑️</span>
 ` : ""}
 </div>
@@ -657,7 +655,7 @@ ${(p.replies && p.replies.length > 0) ?
    `).join("")
 : ""}
 
-${isAdmin ? `
+${currentUser && isAdmin ? `
 <div style="margin-top:8px; font-size:14px; color:var(--accent); cursor:pointer;"
 onclick="replyPost('${id}')">
 Reply
@@ -765,30 +763,22 @@ window.googleLogin = async () => {
 };
 
 onAuthStateChanged(auth,(user)=>{
-    if(user){
     currentUser = user;
-    isAdmin = user.email === "adminken@gmail.com";
+    isAdmin = user?.email === "adminken@gmail.com";
 
-    setTimeout(()=>{
-        window.dispatchEvent(new Event("refreshPosts"));
-    },100);
+    loginBtn.style.display = user ? "none" : "inline";
+    logoutBtn.style.display = user ? "inline" : "none";
 
-    loginBtn.style.display="none";
-    logoutBtn.style.display="inline-block";
     modal.style.display="none";
-    }else{
-        currentUser=null;
-        isAdmin=false;
-        loginBtn.style.display="inline-block";
-        logoutBtn.style.display="none";
+
+    if(cachedSnapshot){
+        renderPosts(cachedSnapshot);
     }
 
-const createPostBtn =
-document.getElementById("createPostBtn");
-
-if(createPostBtn){
-    createPostBtn.style.display =
-        user ? "block" : "none";
+if(user){
+    document.getElementById("createPostBtn").style.display = "inline-block";
+}else{
+    document.getElementById("createPostBtn").style.display = "none";
 }
     
 });
@@ -852,12 +842,6 @@ document.addEventListener("keyup",(e)=>{
 });
     
 </script>
-
-<button id="createPostBtn"
-class="floating-btn"
-onclick="openModal()">
-✏️ Create Post
-</button>
     
 <footer style="
 text-align:center;
