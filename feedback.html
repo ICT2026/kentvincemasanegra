@@ -103,6 +103,7 @@ header{
     content:"";
     position:absolute;
     inset:0;
+    pointer-events:none;
     background:linear-gradient(
         120deg,
         transparent,
@@ -343,19 +344,19 @@ to{opacity:1;transform:translateY(0)}
 }
 
 .marquee{
+    position:relative;
     width:100%;
     overflow:hidden;
-    position:relative;
-    background:linear-gradient(90deg,#0f1115,#141822,#0f1115);
-    white-space:nowrap;
-    padding:12px 0;
+    background:#0f1115;
+    padding:14px 0;
+    z-index:1;
 }
 
-/* animated neon border */
-.marquee::before{
+/* top neon border */
+.marquee::before,
+.marquee::after{
     content:"";
     position:absolute;
-    bottom:0;
     left:0;
     width:100%;
     height:2px;
@@ -371,18 +372,37 @@ to{opacity:1;transform:translateY(0)}
     animation:borderFlow 4s linear infinite;
 }
 
+.marquee::before{ top:0; }
+.marquee::after{ bottom:0; }
+
 @keyframes borderFlow{
     from{ background-position:0% 0; }
     to{ background-position:200% 0; }
 }
 
+/* ====== MARQUEE ====== */
+.marquee{
+    mask-image: linear-gradient(
+        to right,
+        transparent,
+        black 10%,
+        black 90%,
+        transparent
+    );
+}
+
+/* parallax track */
 .marquee-track{
     display:inline-block;
+    white-space:nowrap;
     font-weight:600;
-    font-size:14px;
-    letter-spacing:.5px;
     color:#4da3ff;
-    animation:scrollMarquee 40s linear infinite;
+    animation:scrollMarquee 35s linear infinite;
+}
+
+@keyframes scrollMarquee{
+    from{ transform:translateX(0); }
+    to{ transform:translateX(-50%); }
 }
     
 </style>
@@ -402,9 +422,8 @@ to{opacity:1;transform:translateY(0)}
 </div>
     
 <div style="
-    padding:20px;
-    max-width:1100px;
-    margin:0 auto;
+    padding:20px 40px;
+    width:100%;
     position:relative;
     z-index:10;
     display:flex;
@@ -689,14 +708,22 @@ window.toggleLike = async (postId) => {
     if(!currentUser) return;
 
     const ref = doc(db,"posts",postId);
+    const snap = await getDoc(ref);
 
-    await updateDoc(ref,{
-        likedBy: arrayUnion(currentUser.uid)
-    }).catch(async ()=>{
+    if(!snap.exists()) return;
+
+    const data = snap.data();
+    const likedBy = data.likedBy || [];
+
+    if(likedBy.includes(currentUser.uid)){
         await updateDoc(ref,{
             likedBy: arrayRemove(currentUser.uid)
         });
-    });
+    } else {
+        await updateDoc(ref,{
+            likedBy: arrayUnion(currentUser.uid)
+        });
+    }
 };
     
 const modalContent = document.querySelector(".modal-content");
@@ -730,21 +757,15 @@ const marqueeTrack = document.getElementById("marqueeTrack");
 function fillMarquee() {
     if(!marqueeTrack) return;
 
-    const baseText = 
-    "✨ Welcome! Your thoughts and ideas matter here.        " +
-    "🚀 Share your feedback freely.        " +
-    "💬 Every review can receive replies.        " +
-    "🌟 Community driven discussions.        ";
+    const baseText =
+    "✨ Welcome! Your thoughts and ideas matter here.      " +
+    "🚀 Share your feedback freely.      " +
+    "💬 Every review can receive replies.      ";
 
-    marqueeTrack.innerHTML = baseText;
-
-    while (marqueeTrack.scrollWidth < window.innerWidth * 3) {
-        marqueeTrack.innerHTML += baseText;
-    }
+    marqueeTrack.innerHTML = baseText + baseText;
 }
 
 fillMarquee();
-window.addEventListener("resize", fillMarquee);
     
 /* ================= EMAIL LOGIN ================= */
 window.emailLogin = async () => {
