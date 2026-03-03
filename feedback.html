@@ -375,7 +375,7 @@ to{opacity:1;transform:translateY(0)}
     
 <div class="dashboard">
 
-<div style="display:flex; justify-content:flex-end; margin-bottom:20px;">
+<div style="display:flex; justify-content:flex-start; margin-bottom:20px;">
 <button id="createPostBtn"
 class="create-btn"
 onclick="openModal()"
@@ -655,7 +655,7 @@ ${(p.replies && p.replies.length > 0) ?
    `).join("")
 : ""}
 
-${currentUser && isAdmin ? `
+${currentUser ? `
 <div style="margin-top:8px; font-size:14px; color:var(--accent); cursor:pointer;"
 onclick="replyPost('${id}')">
 Reply
@@ -734,18 +734,13 @@ window.toggleLike = async (postId) => {
     }
 
     const ref = doc(db,"posts",postId);
-    const snap = await getDoc(ref);
-    const data = snap.data();
-
-    const likedBy = data.likedBy || [];
-    const uid = currentUser.uid;
-
-    const alreadyLiked = likedBy.includes(uid);
 
     await updateDoc(ref,{
-        likedBy: alreadyLiked
-            ? arrayRemove(uid)
-            : arrayUnion(uid)
+        likedBy: arrayUnion(currentUser.uid)
+    }).catch(async ()=>{
+        await updateDoc(ref,{
+            likedBy: arrayRemove(currentUser.uid)
+        });
     });
 };
     
@@ -793,10 +788,8 @@ window.emailLogin = async () => {
         await signInWithEmailAndPassword(auth,email,pass);
         postStatus.className="post-status success";
         postStatus.textContent="✅ Login successful";
-        setTimeout(()=>{
-            modal.style.display="none";
-            postStatus.textContent="";
-        },1000);
+        modal.style.display="none";
+        status.textContent="";
     }catch(error){
         postStatus.className="post-status error";
         postStatus.textContent = error.message;
