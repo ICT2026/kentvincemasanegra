@@ -86,22 +86,26 @@ header{
     position:relative;
     top:-2px;
     border-radius:20px;
-    background:linear-gradient(90deg,#ff00cc,#ff66ff);
+    background:linear-gradient(90deg,#ff00cc,#ff66ff,#ff00cc);
+    background-size:200% 100%;
     color:#fff;
     font-weight:700;
-    box-shadow:0 0 12px rgba(255,0,204,.6);
-    animation:vipFloat 3s ease-in-out infinite;
+    animation:vipGlow 3s linear infinite;
+    box-shadow:0 0 10px rgba(255,0,204,.6);
 }
 
-@keyframes vipFloat{
+@keyframes vipGlow{
     0%{
-        transform:translateY(0px);
+        background-position:0% 50%;
+        box-shadow:0 0 8px rgba(255,0,204,.6);
     }
     50%{
-        transform:translateY(-4px);
+        background-position:100% 50%;
+        box-shadow:0 0 18px rgba(255,0,204,1);
     }
     100%{
-        transform:translateY(0px);
+        background-position:0% 50%;
+        box-shadow:0 0 8px rgba(255,0,204,.6);
     }
 }
 
@@ -386,13 +390,14 @@ to{opacity:1;transform:translateY(0)}
 .like-tooltip{
     position:absolute;
     bottom:130%;
-    left:50%;
-    transform:translateX(-50%);
+    left:0;
     background:#111827;
     padding:8px 12px;
     border-radius:8px;
     font-size:12px;
-    white-space:nowrap;
+    white-space:normal;
+    min-width:140px;
+    text-align:left;
     opacity:0;
     pointer-events:none;
     transition:.2s;
@@ -558,6 +563,7 @@ to{opacity:1;transform:translateY(0)}
 .dashboard{
     flex-direction:column;
     align-items:center;
+    padding:20px 12px;
 }
 
 .left-side,
@@ -573,11 +579,6 @@ to{opacity:1;transform:translateY(0)}
     padding:16px;
 }
 
-header{
-    flex-direction:column;
-    gap:10px;
-}
-
 .back-btn{
     position:static !important;
 }
@@ -587,6 +588,14 @@ header{
 }
 
 }
+
+body.modal-open header,
+body.modal-open .marquee,
+body.modal-open .dashboard{
+    filter:blur(6px);
+    pointer-events:none;
+    user-select:none;
+}
     
 </style>
 </head>
@@ -594,7 +603,8 @@ header{
 <header style="position:relative; display:flex; align-items:center; justify-content:center;">
 <a href="index.html" class="back-btn" style="position:absolute; left:20px;">← Back</a>
 <h2 style="margin:0;">Community Feedback</h2>
-<div id="authArea" style="position:absolute; right:20px;">
+<div id="authArea" style="position:absolute; right:20px; display:flex; gap:10px; align-items:center;">
+<span id="userDisplay" style="font-weight:600;"></span>
 <span id="loginBtn" class="auth-link" onclick="openLogin()">Login</span>
 <span id="logoutBtn" class="auth-link" onclick="logout()" style="display:none;">Logout</span>
 </div>
@@ -605,10 +615,9 @@ header{
 </div>
     
 <div style="
-    padding:20px 40px;
+    padding:20px;
     width:100%;
-    position:relative;
-    z-index:10;
+    box-sizing:border-box;
     display:flex;
     justify-content:flex-start;
 ">
@@ -741,6 +750,7 @@ const logoutBtn = document.getElementById("logoutBtn");
     
 window.openLogin = () => {
     modal.style.display="flex";
+    document.body.classList.add("modal-open");
 
     authBox.style.display="block";
     registerBox.style.display="none";
@@ -761,7 +771,7 @@ window.openModal = () => {
     }
 
     modal.style.display="flex";
-
+    document.body.classList.add("modal-open");
     authBox.style.display="none";
     registerBox.style.display="none";
     replyBox.style.display="none";
@@ -817,6 +827,7 @@ await addDoc(collection(db,"posts"),{
  status.textContent="✅ Posted successfully!";
  setTimeout(()=>{
      modal.style.display="none";
+     document.body.classList.remove("modal-open");
      status.textContent="";
  },900);
 };
@@ -881,17 +892,24 @@ ${p.text}
 ${p.edited ? '<span style="color:gray;font-size:12px;"> (edited)</span>' : ''}
 </p>
 
-<div class="read-more"
-onclick="toggleRead('${id}')">
-... Read more
-</div>
-
 <div class="post-actions">
 <button class="like-btn"
 onclick="toggleLike('${id}')">
 ${liked ? "❤️" : "🤍"} ${(p.likedBy || []).length}
 <div class="like-tooltip">
-${(p.likedBy || []).map(l => l.name).join('<br>')}
+${
+(() => {
+   const likes = p.likedBy || [];
+   const firstTen = likes.slice(0,10);
+   const remaining = likes.length - 10;
+
+   let names = firstTen.map(l => l.name).join("<br>");
+   if(remaining > 0){
+       names += `<br>+${remaining} other${remaining>1?'s':''}`;
+   }
+   return names;
+})()
+}
 </div>
 </button>
 
@@ -935,6 +953,15 @@ r.username === "masanegrakentvinces@gmail.com"
 : ""}
 `;
         postsContainer.appendChild(card);
+        const textEl = card.querySelector(".post-text");
+
+        if(textEl.scrollHeight > textEl.clientHeight){
+            const btn = document.createElement("div");
+            btn.className = "read-more";
+            btn.textContent = "... Read more";
+            btn.onclick = () => toggleRead(id);
+            textEl.after(btn);
+        }
     });
 }
     
@@ -946,6 +973,7 @@ window.replyPost = (postId)=>{
     activeReplyPostId = postId;
 
     modal.style.display="flex";
+    document.body.classList.add("modal-open");
     authBox.style.display="none";
     registerBox.style.display="none";
     postBox.style.display="none";
@@ -970,6 +998,7 @@ window.submitReply = async ()=>{
 
     document.getElementById("replyTextArea").value="";
     modal.style.display="none";
+    document.body.classList.remove("modal-open");
 };
     
 /* ================= TOOGLE LIKE ================= */
@@ -1004,6 +1033,7 @@ const modalContent = document.querySelector(".modal-content");
 modal.addEventListener("click",(e)=>{
     if(!modalContent.contains(e.target)){
         modal.style.display="none";
+        document.body.classList.remove("modal-open");
     }
 });
 /* ================= GOOGLE LOGIN ================= */
@@ -1018,13 +1048,24 @@ onAuthStateChanged(auth,(user)=>{
     loginBtn.style.display = user ? "none" : "inline";
     logoutBtn.style.display = user ? "inline" : "none";
     modal.style.display="none";
+    document.body.classList.remove("modal-open");
     if(cachedSnapshot){
         renderPosts(cachedSnapshot);
     }
 if(user){
+
     document.getElementById("createPostBtn").style.display = "inline-block";
+
+    // SHOW USER NAME
+    document.getElementById("userDisplay").textContent =
+        user.displayName || user.email;
+
 }else{
+
     document.getElementById("createPostBtn").style.display = "none";
+
+    // CLEAR NAME WHEN LOGGED OUT
+    document.getElementById("userDisplay").textContent = "";
 }
     
 });
@@ -1056,6 +1097,7 @@ window.emailLogin = async () => {
         postStatus.textContent="✅ Login successful";
         setTimeout(()=>{
             modal.style.display="none";
+            document.body.classList.remove("modal-open");
             postStatus.textContent="";
         },800);
     }catch(error){
