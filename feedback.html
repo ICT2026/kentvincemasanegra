@@ -70,9 +70,11 @@ header{
 }
 
 .vip-badge{
-    margin-left:8px;
+    margin-left:2px;
     font-size:12px;
     padding:3px 8px;
+    position:relative;
+    top:-3px;
     border-radius:20px;
     background:linear-gradient(90deg,#ff00cc,#ff66ff);
     color:#fff;
@@ -96,7 +98,8 @@ header{
 .verified-icon{
     width:16px;
     height:16px;
-    margin-right:6px;
+    margin-right:-2px;
+    vertical-align:-2px;
     vertical-align:middle;
     animation:badgePulse 2s infinite alternate;
 }
@@ -108,11 +111,10 @@ header{
     padding:40px 20px;
     flex:1;
 }
+    
 .posts-grid{
-    display:grid;
-    grid-template-columns:repeat(auto-fill, minmax(380px,1fr));
-    gap:22px;
-    justify-content:center;
+    column-count:2;
+    column-gap:22px;
 }
 /* POST CARD */
 .post-card{
@@ -123,6 +125,9 @@ header{
     transition:.35s cubic-bezier(.22,1,.36,1);
     position:relative;
     word-wrap:break-word;
+    display:inline-block;
+    width:100%;
+    margin-bottom:22px;
 }
 
 .post-text{
@@ -308,6 +313,25 @@ to{opacity:1;transform:translateY(0)}
     padding:6px 14px;
     font-size:14px;
     transition:.2s;
+    position:relative;
+
+}
+.like-tooltip{
+    position:absolute;
+    bottom:130%;
+    left:50%;
+    transform:translateX(-50%);
+    background:#111827;
+    padding:8px 12px;
+    border-radius:8px;
+    font-size:12px;
+    white-space:nowrap;
+    opacity:0;
+    pointer-events:none;
+    transition:.2s;
+}
+.like-btn:hover .like-tooltip{
+    opacity:1;
 }
 .like-btn:hover{
     background:#ef4444;
@@ -461,6 +485,35 @@ to{opacity:1;transform:translateY(0)}
     from{ transform:translateX(0); }
     to{ transform:translateX(-50%); }
 }
+
+@media (max-width:768px){
+
+.posts-grid{
+    column-count:1;
+}
+
+.dashboard{
+    padding:20px 15px;
+}
+
+.post-card{
+    padding:16px;
+}
+
+header{
+    flex-direction:column;
+    gap:10px;
+}
+
+.back-btn{
+    position:static !important;
+}
+
+#createPostBtn{
+    width:100%;
+}
+
+}
     
 </style>
 </head>
@@ -601,9 +654,11 @@ const logoutBtn = document.getElementById("logoutBtn");
     
 window.openLogin = () => {
     modal.style.display="flex";
+
     authBox.style.display="block";
     registerBox.style.display="none";
     postBox.style.display="none";
+    replyBox.style.display="none";
 };
 window.showRegister = ()=>{
     authBox.style.display="none";
@@ -617,9 +672,12 @@ window.openModal = () => {
         openLogin();
         return;
     }
+
     modal.style.display="flex";
+
     authBox.style.display="none";
     registerBox.style.display="none";
+    replyBox.style.display="none";
     postBox.style.display="block";
 };
 /* ADD POST */
@@ -713,10 +771,12 @@ function renderPosts(snapshot){
   ${
   p.username === "masanegrakentvinces@gmail.com"
   ? `<span class="admin-badge">💠 Admin</span>`
+      
   : p.username === "zaorichan934@gmail.com" ||
-  p.username === "lxlithamxthyst@gmail.com" ||
-  p.username === "ablaobryan4400@gmail.com"
+    p.username === "lxlithamxthyst@gmail.com" ||
+    p.username === "ablaobryan4400@gmail.com"
   ? `<span class="vip-badge">💎 VIP</span>`
+      
   : p.username === "ablaomaryan@gmail.com"
   ? `<span class="mod-badge">Ⓜ️ Moderator</span>`
   : ""
@@ -740,10 +800,13 @@ onclick="toggleRead('${id}')">
 </div>
 
 <div class="post-actions">
-   <button class="like-btn"
-   onclick="toggleLike('${id}')">
-   ${liked ? "❤️" : "🤍"} ${(p.likedBy || []).length}
-   </button>
+<button class="like-btn"
+onclick="toggleLike('${id}')">
+${liked ? "❤️" : "🤍"} ${(p.likedBy || []).length}
+<div class="like-tooltip">
+${(p.likedBy || []).map(l => l.name).join('<br>')}
+</div>
+</button>
 
    ${currentUser ? `
    <div style="
@@ -764,18 +827,20 @@ ${(p.replies && p.replies.length > 0) ?
          <b>
          ${r.name}
 
-         ${
-         r.username === "email" === "masanegrakentvinces@gmail.com"
-         ? `<span class="admin-badge">💠 Admin</span>`
-         : r.username === "email" === "zaorichan934@gmail.com" ||
-         r.username === "email" === "lxlithamxthyst@gmail.com" ||
-         r.username === "email" === "ablaobryan4400@gmail.com"
-         ? `<span class="vip-badge">💎 VIP</span>`
-         : r.username === "email" === "ablaomaryan@gmail.com"
-         ? `<span class="mod-badge">Ⓜ️ Moderator</span>`
-         : ""
-         }
+${
+r.username === "masanegrakentvinces@gmail.com"
+? `<span class="admin-badge">💠 Admin</span>`
 
+: r.username === "zaorichan934@gmail.com" ||
+  r.username === "lxlithamxthyst@gmail.com" ||
+  r.username === "ablaobryan4400@gmail.com"
+? `<span class="vip-badge">💎 VIP</span>`
+
+: r.username === "ablaomaryan@gmail.com"
+? `<span class="mod-badge">Ⓜ️ Moderator</span>`
+
+: ""
+}
          </b>: ${r.text}
 
       </div>
@@ -826,19 +891,24 @@ window.toggleLike = async (postId) => {
 
     const ref = doc(db,"posts",postId);
     const snap = await getDoc(ref);
-
     if(!snap.exists()) return;
 
     const data = snap.data();
     const likedBy = data.likedBy || [];
 
-    if(likedBy.includes(currentUser.uid)){
+    const alreadyLiked = likedBy.find(l => l.uid === currentUser.uid);
+
+    if(alreadyLiked){
         await updateDoc(ref,{
-            likedBy: arrayRemove(currentUser.uid)
+            likedBy: likedBy.filter(l => l.uid !== currentUser.uid)
         });
     } else {
         await updateDoc(ref,{
-            likedBy: arrayUnion(currentUser.uid)
+            likedBy: arrayUnion({
+                uid: currentUser.uid,
+                name: currentUser.displayName || currentUser.email,
+                email: currentUser.email
+            })
         });
     }
 };
