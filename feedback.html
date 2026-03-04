@@ -58,17 +58,25 @@ header{
     font-size:12px;
     padding:3px 8px;
     position:relative;
-    top:-3px;
+    top:-2px;
     border-radius:20px;
     background:linear-gradient(90deg,#ffd700,#ffae00);
     color:#000;
     font-weight:700;
-    box-shadow:0 0 10px rgba(255,215,0,.8);
-    animation:adminGlow 2s infinite alternate;
+    animation:adminAura 2.5s ease-in-out infinite;
 }
-@keyframes adminGlow{
-    from{box-shadow:0 0 6px rgba(255,215,0,.5);}
-    to{box-shadow:0 0 18px rgba(255,215,0,1);}
+
+@keyframes adminAura{
+    0%{
+        box-shadow:0 0 5px rgba(255,215,0,.5);
+    }
+    50%{
+        box-shadow:0 0 20px rgba(255,215,0,1),
+                   0 0 35px rgba(255,174,0,.8);
+    }
+    100%{
+        box-shadow:0 0 5px rgba(255,215,0,.5);
+    }
 }
 
 .vip-badge{
@@ -76,13 +84,25 @@ header{
     font-size:12px;
     padding:3px 8px;
     position:relative;
-    top:-3px;
+    top:-2px;
     border-radius:20px;
     background:linear-gradient(90deg,#ff00cc,#ff66ff);
     color:#fff;
     font-weight:700;
-    box-shadow:0 0 10px rgba(255,0,204,.6);
-    animation:badgePulse 2s infinite alternate;
+    box-shadow:0 0 12px rgba(255,0,204,.6);
+    animation:vipFloat 3s ease-in-out infinite;
+}
+
+@keyframes vipFloat{
+    0%{
+        transform:translateY(0px);
+    }
+    50%{
+        transform:translateY(-4px);
+    }
+    100%{
+        transform:translateY(0px);
+    }
 }
 
 .mod-badge{
@@ -90,13 +110,37 @@ header{
     font-size:12px;
     padding:3px 8px;
     position:relative;
-    top:-3px;
+    top:-2px;
     border-radius:20px;
-    background:linear-gradient(90deg,#00c6ff,#0072ff);
+    background:linear-gradient(90deg,#a855f7,#7e22ce);
     color:#fff;
     font-weight:700;
-    box-shadow:0 0 10px rgba(0,114,255,.6);
-    animation:badgePulse 2s infinite alternate;
+    overflow:hidden;
+}
+
+.mod-badge::after{
+    content:"";
+    position:absolute;
+    top:0;
+    left:-100%;
+    width:100%;
+    height:100%;
+    background:linear-gradient(
+        120deg,
+        transparent,
+        rgba(255,255,255,.4),
+        transparent
+    );
+    animation:modShine 3s linear infinite;
+}
+
+@keyframes modShine{
+    0%{
+        left:-100%;
+    }
+    100%{
+        left:100%;
+    }
 }
 
 .verified-icon{
