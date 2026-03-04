@@ -781,8 +781,11 @@ const googleProvider = new GoogleAuthProvider();
 let currentUser = null;
 let lastPostTime = 0; // anti‑spam timer
 const loginBtn = document.getElementById("loginBtn");
-const logoutBtn = document.getElementById("logoutBtn");
-    
+const profileWrapper = document.getElementById("profileWrapper");
+const profileDropdown = document.getElementById("profileDropdown");
+const userDisplay = document.getElementById("userDisplay");
+const confirmBox = document.getElementById("confirmBox");
+
 window.openLogin = () => {
     modal.style.display="flex";
     document.body.classList.add("modal-open");
@@ -799,7 +802,7 @@ window.showRegister = ()=>{
     
 /* MODAL */
 const modal = document.getElementById("modal");
-const confirmBox = document.getElementById("confirmBox");
+
 window.openModal = () => {
     if(!currentUser){
         openLogin();
@@ -1081,29 +1084,33 @@ window.googleLogin = async () => {
 };
 onAuthStateChanged(auth,(user)=>{
     currentUser = user;
-    loginBtn.style.display = user ? "none" : "inline";
-    logoutBtn.style.display = user ? "inline" : "none";
+
     modal.style.display="none";
     document.body.classList.remove("modal-open");
+
+    if(user){
+
+        profileWrapper.style.display = "block";
+        loginBtn.style.display = "none";
+
+        userDisplay.textContent =
+            user.displayName || user.email;
+
+        document.getElementById("createPostBtn").style.display = "inline-block";
+
+    }else{
+
+        profileWrapper.style.display = "none";
+        loginBtn.style.display = "inline";
+
+        userDisplay.textContent = "";
+
+        document.getElementById("createPostBtn").style.display = "none";
+    }
+
     if(cachedSnapshot){
         renderPosts(cachedSnapshot);
     }
-if(user){
-
-    profileWrapper.style.display = "block";
-    loginBtn.style.display = "none";
-
-    userDisplay.textContent =
-        user.displayName || user.email;
-
-}else{
-
-    profileWrapper.style.display = "none";
-    loginBtn.style.display = "inline";
-
-    userDisplay.textContent = "";
-}
-    
 });
 
 const marqueeTrack = document.getElementById("marqueeTrack");
@@ -1189,10 +1196,6 @@ window.closeConfirm = () => {
     modal.style.display = "none";
     document.body.classList.remove("modal-open");
 };
-    
-const profileWrapper = document.getElementById("profileWrapper");
-const profileDropdown = document.getElementById("profileDropdown");
-const userDisplay = document.getElementById("userDisplay");
 
 userDisplay.addEventListener("click", () => {
     profileDropdown.style.display =
