@@ -191,7 +191,6 @@ body{
     align-items:flex-start;
     gap:40px;
     padding:20px 20px;
-    flex:1;
     width:100%;
     box-sizing:border-box;
 }
@@ -602,11 +601,11 @@ to{opacity:1;transform:translateY(0)}
 #authArea{
     order:3;
 }
-    
+
 .dashboard{
     flex-direction:column;
     align-items:center;
-    padding:20px 12px;
+    padding:20px 16px;
 }
 
 .left-side,
@@ -616,20 +615,25 @@ to{opacity:1;transform:translateY(0)}
 
 .posts-grid{
     width:100%;
+    max-width:600px;
+    margin:0 auto;
 }
 
+/* ✅ Add side breathing room */
 .post-card{
     padding:16px;
-}
-
-.back-btn{
-    position:static !important;
+    margin-bottom:18px;
 }
 
 #createPostBtn{
     width:100%;
 }
 
+}
+    
+.back-btn{
+    position:static !important;
+}
 }
 
 body.modal-open > *:not(.modal){
