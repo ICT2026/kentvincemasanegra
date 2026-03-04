@@ -36,15 +36,32 @@ body{
     display:flex;
     flex-direction:column;
 }
-/* HEADER */
-header{
-    padding:15px 25px;
+
+/* NEW HEADER LAYOUT */
+.main-header{
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    padding:15px 20px;
     background:#12141a;
     border-bottom:1px solid #23262f;
     position:sticky;
     top:0;
     z-index:1000;
 }
+
+.header-title{
+    margin:0;
+    text-align:center;
+    flex:1;
+}
+
+#authArea{
+    display:flex;
+    align-items:center;
+    gap:12px;
+}
+    
 .back-btn{
     color:white;
     text-decoration:none;
@@ -167,7 +184,7 @@ header{
     justify-content:center;
     align-items:flex-start;
     gap:40px;
-    padding:40px 20px;
+    padding:20px 20px;
     flex:1;
     width:100%;
     box-sizing:border-box;
@@ -561,6 +578,25 @@ to{opacity:1;transform:translateY(0)}
 
 @media (max-width:768px){
 
+.main-header{
+    flex-wrap:wrap;
+    gap:8px;
+}
+
+.header-title{
+    order:2;
+    width:100%;
+    text-align:center;
+}
+
+.back-btn{
+    order:1;
+}
+
+#authArea{
+    order:3;
+}
+    
 .dashboard{
     flex-direction:column;
     align-items:center;
@@ -601,39 +637,18 @@ body.modal-open .dashboard{
 </style>
 </head>
 <body>
-<header style="position:relative; display:flex; align-items:center; justify-content:center;">
-<a href="index.html" class="back-btn" style="position:absolute; left:20px;">← Back</a>
-<h2 style="margin:0;">Community Feedback</h2>
-<div id="authArea" style="position:absolute; right:20px; display:flex; align-items:center;">
+<header class="main-header">
+    <a href="index.html" class="back-btn">← Back</a>
 
-<div id="profileWrapper" style="position:relative; display:none;">
+    <h2 class="header-title">Community Feedback</h2>
 
-    <div id="userDisplay"
-         style="font-weight:600; cursor:pointer;">
-    </div>
-
-    <div id="profileDropdown" style="
-        position:absolute;
-        right:0;
-        top:120%;
-        background:var(--card);
-        border:1px solid var(--border);
-        border-radius:12px;
-        padding:10px;
-        width:160px;
-        display:none;
-        box-shadow:0 15px 35px rgba(0,0,0,.4);
-    ">
-        <div style="padding:8px; cursor:pointer;" onclick="confirmLogout()">
-            🚪 Logout
+    <div id="authArea">
+        <div id="profileWrapper">
+            <span id="userDisplay"></span>
+            <span id="logoutBtn" class="auth-link" onclick="logout()">Log Out</span>
         </div>
+        <span id="loginBtn" class="auth-link" onclick="openLogin()">Login</span>
     </div>
-
-</div>
-
-<span id="loginBtn" class="auth-link" onclick="openLogin()">Login</span>
-
-</div>
 </header>
     
 <div class="marquee">
@@ -723,14 +738,6 @@ placeholder="Say something..."></textarea>
 <textarea id="replyTextArea" placeholder="Type your reply..."></textarea>
 <button class="primary-btn" onclick="submitReply()">Send Reply</button>
 </div>
-<div id="confirmBox" style="display:none; text-align:center;">
-    <h3>Confirm Logout</h3>
-    <p>Are you sure you want to logout?</p>
-    <div style="display:flex; gap:10px; justify-content:center;">
-        <button onclick="logout()">Yes</button>
-        <button onclick="closeConfirm()" style="background:#444;">Cancel</button>
-    </div>
-</div>
 
 </div>
 </div>
@@ -782,9 +789,8 @@ let currentUser = null;
 let lastPostTime = 0; // anti‑spam timer
 const loginBtn = document.getElementById("loginBtn");
 const profileWrapper = document.getElementById("profileWrapper");
-const profileDropdown = document.getElementById("profileDropdown");
 const userDisplay = document.getElementById("userDisplay");
-const confirmBox = document.getElementById("confirmBox");
+const logoutBtn = document.getElementById("logoutBtn");
 
 window.openLogin = () => {
     modal.style.display="flex";
@@ -1089,22 +1095,16 @@ onAuthStateChanged(auth,(user)=>{
     document.body.classList.remove("modal-open");
 
     if(user){
-
-        profileWrapper.style.display = "block";
+        profileWrapper.style.display = "flex";
         loginBtn.style.display = "none";
-
-        userDisplay.textContent =
-            user.displayName || user.email;
-
+        logoutBtn.style.display = "inline";
+        userDisplay.textContent = user.displayName || user.email;
         document.getElementById("createPostBtn").style.display = "inline-block";
-
     }else{
-
         profileWrapper.style.display = "none";
         loginBtn.style.display = "inline";
-
+        logoutBtn.style.display = "none";
         userDisplay.textContent = "";
-
         document.getElementById("createPostBtn").style.display = "none";
     }
 
@@ -1180,34 +1180,6 @@ window.logout = ()=>{
     modal.style.display="none";
     document.body.classList.remove("modal-open");
 };;    
-
-window.confirmLogout = () => {
-    modal.style.display = "flex";
-    document.body.classList.add("modal-open");
-
-    authBox.style.display="none";
-    registerBox.style.display="none";
-    postBox.style.display="none";
-    replyBox.style.display="none";
-    confirmBox.style.display="block";
-};
-
-window.closeConfirm = () => {
-    modal.style.display = "none";
-    document.body.classList.remove("modal-open");
-};
-
-userDisplay.addEventListener("click", () => {
-    profileDropdown.style.display =
-        profileDropdown.style.display === "block" ? "none" : "block";
-});
-
-// Close dropdown when clicking outside
-document.addEventListener("click", (e) => {
-    if (!profileWrapper.contains(e.target)) {
-        profileDropdown.style.display = "none";
-    }
-});
     
 </script>
     
