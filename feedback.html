@@ -116,6 +116,7 @@ header{
     color:#fff;
     font-weight:700;
     overflow:hidden;
+    display:inline-block;
 }
 
 .mod-badge::after{
@@ -123,23 +124,24 @@ header{
     position:absolute;
     top:0;
     left:-100%;
-    width:100%;
+    width:50%;
     height:100%;
     background:linear-gradient(
         120deg,
         transparent,
-        rgba(255,255,255,.4),
+        rgba(255,255,255,.6),
         transparent
     );
+    transform:skewX(-25deg);
     animation:modShine 3s linear infinite;
 }
 
 @keyframes modShine{
     0%{
-        left:-100%;
+        left:-60%;
     }
     100%{
-        left:100%;
+        left:120%;
     }
 }
 
@@ -839,7 +841,7 @@ function renderPosts(snapshot){
         const card = document.createElement("div");
         card.className = "post-card";
         const liked =
-        (p.likedBy || []).includes(currentUser?.uid);
+        (p.likedBy || []).some(l => l.uid === currentUser?.uid);
         card.innerHTML = `
 <div class="post-top">
   <img class="avatar"
@@ -1006,6 +1008,9 @@ modal.addEventListener("click",(e)=>{
 });
 /* ================= GOOGLE LOGIN ================= */
 window.googleLogin = async () => {
+    googleProvider.setCustomParameters({
+        prompt: "select_account"
+    });
     await signInWithPopup(auth, googleProvider);
 };
 onAuthStateChanged(auth,(user)=>{
