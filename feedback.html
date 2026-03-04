@@ -185,6 +185,12 @@ body{
     
 /* ================= DASHBOARD LAYOUT ================= */
 
+.main-container{
+    max-width:1000px;
+    margin:20px auto;
+    padding:0 16px;
+}
+    
 .dashboard{
     display:flex;
     justify-content:center;
@@ -204,7 +210,7 @@ body{
 
 /* CENTER POSTS */
 .posts-grid{
-    width:700px;
+    width:100%;
     max-width:100%;
 }
     
@@ -718,22 +724,19 @@ body.modal-open > *:not(.modal){
         ✏️ Create Post
     </button>
 </div>
-    
-<div class="dashboard">
-
+<div class="main-container">
+ <div class="dashboard">
     <!-- LEFT SIDE PANEL -->
     <div class="left-side">
         <!-- You can put widgets here later -->
     </div>
-
     <!-- CENTER POSTS -->
     <div class="posts-grid" id="posts"></div>
-
     <!-- RIGHT SIDE PANEL -->
     <div class="right-side">
         <!-- Future content -->
     </div>
-
+  </div>
 </div>
     
 <!-- MODAL -->
